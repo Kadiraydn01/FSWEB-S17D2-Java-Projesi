@@ -16,25 +16,25 @@ import java.util.Map;
 public class DeveloperController {
     private Map<Integer, Developer> developers;
     private Taxable taxable;
-@Autowired
-    public DeveloperController(Taxable taxable) {
-        this.taxable = taxable;
-    }
-
 @PostConstruct
 public void init(){
     developers = new HashMap<>();
     this.taxable=taxable;
 }
-@GetMapping("home/developers")
+@Autowired
+public DeveloperController(Taxable taxable) {
+    this.taxable = taxable;
+}
+
+@GetMapping("/")
     public List<Developer> getAllDevelopers(){
     return new ArrayList<>(developers.values());
 }
-@GetMapping("/developers/{id}")
+@GetMapping("/{id}")
 public Developer getDeveloperById(@PathVariable int id){
     return developers.get(id);
 }
-@PostMapping("home/developers")
+@PostMapping("/developers")
     public Developer createDeveloper(@RequestBody Developer developer){
     if(developer.getExperience() == Developer.Experience.JUNIOR){
         developer.setSalary(developer.getSalary() - taxable.getSimpleTaxRate());
@@ -46,7 +46,7 @@ public Developer getDeveloperById(@PathVariable int id){
     developers.put(developer.getId(),developer);
     return developer;
 }
-@PutMapping("/developers/{id}")
+@PutMapping("/{id}")
     public Developer updateDeveloper(@PathVariable int id,@RequestBody Developer updatedDeveloper){
     if (developers.containsKey(id)){
         developers.put(id,updatedDeveloper);
@@ -55,7 +55,7 @@ public Developer getDeveloperById(@PathVariable int id){
         throw new RuntimeException("Developer not found with ID: " + id);
     }
 }
-@DeleteMapping("/developers/{id}")
+@DeleteMapping("/{id}")
     public void deleteDeveloper(@PathVariable int id){
     developers.remove(id);
 }
